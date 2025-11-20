@@ -30,8 +30,8 @@ The specific Python dependencies are listed in `requirements.txt`:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/interview-analysis-pipeline.git
-    cd interview-analysis-pipeline
+    git clone https://github.com/GothiProCoder/AI-Mock-Interview-System.git
+    cd AI-Mock-Interview-System
     ```
 
 2.  **Create and activate a virtual environment** (recommended):
@@ -110,6 +110,47 @@ except Exception as e:
 
 The `analyze` method returns a `FinalReport` Pydantic object, which gives you structured, validated access to the results.
 
+## API Usage
+
+This project includes a FastAPI server to expose the analysis pipeline as a microservice.
+
+### Running the API Server
+
+1.  **Ensure your `.env` file is configured** with your `GEMINI_API_key` as described in the "Configuration" section.
+
+2.  **Start the server** using `uvicorn`:
+    ```bash
+    uvicorn main:app --reload
+    ```
+    The server will be available at `http://127.0.0.1:8000`.
+
+### Sending an Analysis Request
+
+You can send a POST request to the `/analyze` endpoint with your transcript data.
+
+Here is an example using `curl`:
+
+```bash
+curl -X 'POST' \
+  'http://127.0.0.1:8000/analyze' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "metadata": {
+    "candidate_id": "C-API-01",
+    "position": "Software Engineer"
+  },
+  "transcript": {
+    "interviewer": "What is the difference between a list and a tuple in Python?",
+    "candidate": "A list is mutable, meaning you can change its contents, while a tuple is immutable.",
+    "interviewer_1": "Good. Can you give me an example of when you would use a tuple?",
+    "candidate_1": "You might use a tuple for something like dictionary keys or for a collection of constants that should not change."
+  }
+}'
+```
+
+On success, the API will return a JSON object containing the detailed `FinalReport`.
+
 ## Project Structure
 
 ```
@@ -146,6 +187,7 @@ The tests cover:
 -   Validation logic for transcripts (e.g., handling empty or incomplete data).
 -   Basic checks to ensure the `analyze` method runs and produces a structured report.
 -   Correct functioning of the caching mechanism.
+-   Automated tests for the FastAPI endpoint, including success and error cases.
 
 ## License
 
